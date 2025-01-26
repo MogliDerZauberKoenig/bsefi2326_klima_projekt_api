@@ -48,7 +48,7 @@ def api_get_chart_data():
     currentTimestamp = int(time.time())
     minTimestamp = int(currentTimestamp - (days * 24 * 60 * 60))
 
-    # Es werden keine Werte aus der Datenbank gelesen, sondern zufällig zurückgegeben
+    # Es werden keine Werte aus der Datenbank gelesen, sondern zufällig generiert
     simulate = request.args.get("simulate", default=None, type=bool)
     if simulate == True:
         simValues = []
