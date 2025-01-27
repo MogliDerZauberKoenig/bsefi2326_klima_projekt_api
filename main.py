@@ -25,24 +25,28 @@ def close_connection(exception):
 def page_index():
     return "Hier gibt es nichts zu sehen..."
 
-@app.route("/api/get_current_temp")
+@app.route("/api/temp/get")
 def api_get_current_temp():
     return jsonify({ 'result': currentTemp })
 
 # Nur fürs testen der DB...
-@app.route("/api/insert_temp", methods=['GET'])
+@app.route("/api/temp/insert", methods=['POST'])
 def api_insert_temp():
-    temp = request.args.get('temp', default=None, type=float)
+    temp = None
+    try:
+        temp = request.get_json()['value']
+    except:
+        return "fehlercode und so", 400
 
     if temp is None:
-        return "fehlercode und so"
+        return "fehlercode und so", 400
 
     db = get_db()
     db.cursor().execute("INSERT INTO temp (timestamp, value) VALUES (?, ?)", (int(time.time()), temp))
     db.commit()
     return jsonify({ 'result': temp })
 
-@app.route("/api/get_chart_data", methods=['GET'])
+@app.route("/api/chart/get", methods=['GET'])
 def api_get_chart_data():
     days = request.args.get('days', default=1, type=int)
     currentTimestamp = int(time.time())
