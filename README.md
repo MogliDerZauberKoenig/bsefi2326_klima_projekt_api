@@ -58,7 +58,7 @@ Die Antwort ist ein JSON-Array mit Objekten, die die folgenden Felder enthalten:
 Content-Type: application/json
 ```json
 [
-    { "timestamp":0, "value":0 }
+    { "timestamp": 0, "value": 0 }
 ]
 ```
 
