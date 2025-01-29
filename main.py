@@ -7,7 +7,6 @@ import json
 app = Flask(__name__)
 
 database = "database.db"
-currentTemp = 19.2 # <- Inhalt ist aktuell nicht relevant
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -27,7 +26,11 @@ def page_index():
 
 @app.route("/api/temp/get")
 def api_get_current_temp():
-    return jsonify({ 'result': currentTemp })
+    cursor = get_db().cursor()
+    currentTemp = cursor.execute("SELECT timestamp, value FROM temp ORDER BY timestamp ASC LIMIT 1").fetchone()
+    if currentTemp == None:
+        return jsonify({ 'status': False, 'error': 'Aktuell gibt es keine Werte in der Datenbank.' }), 400
+    return jsonify({ 'timestamp': currentTemp[0], 'value': currentTemp[1] })
 
 @app.route("/api/temp/insert", methods=['POST'])
 def api_insert_temp():
