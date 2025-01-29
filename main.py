@@ -36,10 +36,10 @@ def api_insert_temp():
     try:
         temp = request.get_json()['value']
     except:
-        return "fehlercode und so", 400
+        temp = None
 
     if temp is None:
-        return "fehlercode und so", 400
+        return jsonify({ 'status': False, 'error': 'Im Request muss { \'value\': \'19.9\' } entahlten sein.' }), 400
 
     db = get_db()
     db.cursor().execute("INSERT INTO temp (timestamp, value) VALUES (?, ?)", (int(time.time()), temp))
