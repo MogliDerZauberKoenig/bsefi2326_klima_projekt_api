@@ -29,7 +29,6 @@ def page_index():
 def api_get_current_temp():
     return jsonify({ 'result': currentTemp })
 
-# Nur fürs testen der DB...
 @app.route("/api/temp/insert", methods=['POST'])
 def api_insert_temp():
     temp = None
