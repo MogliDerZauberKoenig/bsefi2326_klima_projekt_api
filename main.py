@@ -2,7 +2,6 @@ from flask import Flask, jsonify, request, g
 import time
 import random
 import sqlite3
-import json
 
 app = Flask(__name__)
 
