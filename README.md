@@ -1,5 +1,5 @@
 # bsefi2326_klima_projekt_api
-## GET /temp/get
+## GET /api/temp/get
 
 Dieser Endpunkt wird zum Abrufen von Temperaturdaten verwendet.
 ### Request
@@ -19,7 +19,7 @@ Content-Type: application/json
 Die Antwort enthält die Temperaturdaten in dem Feld „Ergebnis“.
 
 
-## POST /temp/insert
+## POST /api/temp/insert
 
 Dieser Endpunkt wird zum Einfügen von Temperaturdaten verwendet.
 ### Request
@@ -40,7 +40,7 @@ Content-Type: application/json
 ```
 
 
-## GET /chart/get
+## GET /api/chart/get
 
 Dieser Endpunkt ruft Diagrammdaten für eine bestimmte Anzahl von Tagen ab und kann die Daten bei Bedarf simulieren.
 ### Request
