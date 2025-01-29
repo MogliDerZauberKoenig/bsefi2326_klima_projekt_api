@@ -12,7 +12,8 @@ Status: 200
 Content-Type: application/json
 ```json
 {
-    "result": 0
+    "timestamp": 0,
+    "value": 0
 }
 ```
 
