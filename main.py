@@ -26,7 +26,7 @@ def page_index():
 @app.route("/api/temp/get")
 def api_get_current_temp():
     cursor = get_db().cursor()
-    currentTemp = cursor.execute("SELECT timestamp, value FROM temp ORDER BY timestamp ASC LIMIT 1").fetchone()
+    currentTemp = cursor.execute("SELECT timestamp, value FROM temp ORDER BY timestamp DESC LIMIT 1").fetchone()
     if currentTemp == None:
         return jsonify({ 'status': False, 'error': 'Aktuell gibt es keine Werte in der Datenbank.' }), 400
     return jsonify({ 'timestamp': currentTemp[0], 'value': currentTemp[1] })
