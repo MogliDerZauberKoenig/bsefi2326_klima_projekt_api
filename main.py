@@ -1,9 +1,11 @@
 from flask import Flask, jsonify, request, g
+from flask_cors import CORS, cross_origin
 import time
 import random
 import sqlite3
 
 app = Flask(__name__)
+CORS(app, support_credentials=True)
 
 database = "database.db"
 
@@ -24,6 +26,7 @@ def page_index():
     return "Hier gibt es nichts zu sehen..."
 
 @app.route("/api/temp/get")
+@cross_origin(supports_credentials=True)
 def api_get_current_temp():
     cursor = get_db().cursor()
     currentTemp = cursor.execute("SELECT timestamp, value FROM temp ORDER BY timestamp DESC LIMIT 1").fetchone()
@@ -32,6 +35,7 @@ def api_get_current_temp():
     return jsonify({ 'timestamp': currentTemp[0], 'value': currentTemp[1] })
 
 @app.route("/api/temp/insert", methods=['POST'])
+@cross_origin(supports_credentials=True)
 def api_insert_temp():
     temp = None
     try:
@@ -48,6 +52,7 @@ def api_insert_temp():
     return jsonify({ 'result': temp })
 
 @app.route("/api/chart/get", methods=['GET'])
+@cross_origin(supports_credentials=True)
 def api_get_chart_data():
     days = request.args.get('days', default=1, type=int)
     currentTimestamp = int(time.time())
