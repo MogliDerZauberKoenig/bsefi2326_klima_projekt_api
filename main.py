@@ -79,5 +79,5 @@ def api_get_chart_data():
 
     return jsonify([dict(ix) for ix in rows])
 
-if __name__ == "__main":
+if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
