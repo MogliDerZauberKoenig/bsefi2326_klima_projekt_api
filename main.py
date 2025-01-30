@@ -39,7 +39,7 @@ def api_get_current_temp():
 def api_insert_temp():
     temp = None
     try:
-        temp = request.get_json()['value']
+        temp = float(request.get_json()['value'])
     except:
         temp = None
 
