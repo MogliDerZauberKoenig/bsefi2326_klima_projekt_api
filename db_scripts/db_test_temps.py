@@ -11,7 +11,7 @@ probeIntervall = 1 # <- in Sekunden
 amountOfValues = int((days * 24 * 60 * 60) / probeIntervall)
 
 currentTimestamp = int(time.time())
-oldValue = round(random.uniform(15.0, 25.0), 2)
+oldValue = round(random.uniform(15.0, 30.0), 2)
 
 print(f"Es werden {amountOfValues} Werte erstellt, mit einem Intervall von {probeIntervall} Sekunden.")
 
@@ -19,9 +19,9 @@ for i in range(amountOfValues):
     timestamp = currentTimestamp - (i * probeIntervall)
     value = 0
 
-    value = round(random.uniform(oldValue - 0.25, oldValue + 0.25), 2)
-    if value > 25.0:
-        value -= value - 25.0
+    value = round(random.uniform(oldValue - random.uniform(1.0, 2.5), oldValue + random.uniform(1.0, 2.5)), 2)
+    if value > 30.0:
+        value -= value - 30.0
     elif value < 10.0:
         value += 10.0 - value
 
