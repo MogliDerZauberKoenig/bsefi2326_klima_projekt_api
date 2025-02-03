@@ -79,19 +79,10 @@ def api_get_chart_data():
         return jsonify(simValues)
 
     db = get_db()
-    #db.row_factory = sqlite3.Row
-    #rows = db.cursor().execute(f"SELECT timestamp, value FROM temp WHERE timestamp >= { minTimestamp }").fetchall()
+    db.row_factory = sqlite3.Row
+    rows = db.cursor().execute(f"SELECT timestamp, value FROM temp WHERE timestamp >= { minTimestamp }").fetchall()
 
-    res = []
-
-    for i in range(days * 24):
-        min = int(currentTimestamp - (i * 24 * 60 * 60))
-        #max = int(currentTimestamp - ((i + 1) * 24 * 60 * 60))
-        f = db.cursor().execute(f"SELECT MIN(value), MAX(value) FROM temp WHERE timestamp >= { min }").fetchall()
-        print(f)
-
-    return jsonify({ "status": "1" })
-    #return jsonify([dict(ix) for ix in rows])
+    return jsonify([dict(ix) for ix in rows])
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
