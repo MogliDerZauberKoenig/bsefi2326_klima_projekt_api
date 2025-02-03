@@ -79,7 +79,7 @@ def api_get_chart_data():
         return jsonify(simValues)
 
     db = get_db()
-    db.row_factory = sqlite3.Row
+    #db.row_factory = sqlite3.Row
     #rows = db.cursor().execute(f"SELECT timestamp, value FROM temp WHERE timestamp >= { minTimestamp }").fetchall()
 
     res = []
