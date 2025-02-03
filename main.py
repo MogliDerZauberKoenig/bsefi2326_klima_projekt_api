@@ -88,8 +88,7 @@ def api_get_chart_data():
         min = int(currentTimestamp - (i * 24 * 60 * 60))
         max = int(currentTimestamp - ((i + 1) * 24 * 60 * 60))
         f = db.cursor().execute(f"SELECT MIN(value), MAX(value) FROM temp WHERE timestamp >= { min } AND timestamp < { max }").fetchall()
-        print(f[0])
-        print(f[1])
+        print(f)
 
     return jsonify({ "status": "1" })
     #return jsonify([dict(ix) for ix in rows])
