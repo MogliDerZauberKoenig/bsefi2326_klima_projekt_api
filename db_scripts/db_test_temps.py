@@ -7,7 +7,7 @@ print(connection.total_changes)
 cursor = connection.cursor()
 
 days = 30
-probeIntervall = 10 # <- in Sekunden
+probeIntervall = 30 # <- in Sekunden
 amountOfValues = int((days * 24 * 60 * 60) / probeIntervall)
 
 currentTimestamp = int(time.time())
