@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, g
 from flask_cors import CORS, cross_origin
 import time
+from datetime import datetime
 import random
 import sqlite3
 
@@ -37,6 +38,7 @@ def api_get_current_temp():
 @app.route("/api/temp/insert", methods=['POST'])
 @cross_origin(supports_credentials=True)
 def api_insert_temp():
+    timestamp = int(time.time())
     temp = None
     try:
         temp = float(request.get_json()['value'])
@@ -47,8 +49,17 @@ def api_insert_temp():
         return jsonify({ 'status': False, 'error': 'Im Request muss { \'value\': \'19.9\' } entahlten sein.' }), 400
 
     db = get_db()
-    db.cursor().execute("INSERT INTO temp (timestamp, value) VALUES (?, ?)", (int(time.time()), temp))
+
+    #lastTempTimestamp = db.cursor().execute("SELECT timestamp FROM temp ORDER BY timestamp DESC LIMIT 1").fetchone()
+
+    #if datetime.fromtimestamp(lastTempTimestamp[0]).hour != datetime.fromtimestamp(timestamp).hour:
+        #print("neue stunde")
+        #rows = db.cursor().execute(f"SELECT MIN(value), MAX(value) FROM temp WHERE timestamp >= { timestamp - (60 * 60) }").fetchall()
+        #db.cursor().execute("INSERT INTO charttemp (timestamp, valueMin, valueMax) VALUES (?, ?, ?)", (timestamp, rows[0], rows[1]))
+
+    db.cursor().execute("INSERT INTO temp (timestamp, value) VALUES (?, ?)", (timestamp, temp))
     db.commit()
+
     return jsonify({ 'result': temp })
 
 @app.route("/api/chart/get", methods=['GET'])
