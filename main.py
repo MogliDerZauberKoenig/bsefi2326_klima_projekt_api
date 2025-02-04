@@ -89,7 +89,14 @@ def api_insert_temp():
 def api_get_chart_data():
     days = request.args.get('days', default=1, type=int)
     currentDate = datetime.fromtimestamp(time.time())
-    currentTimestamp = int(datetime(currentDate.year, currentDate.month, currentDate.day, currentDate.hour).timestamp())
+    currentTimestamp = int(
+        datetime(
+            currentDate.year, 
+            currentDate.month, 
+            currentDate.day, 
+            currentDate.hour
+        ).timestamp()
+    )
     minTimestamp = int(currentTimestamp - (days * 24 * 60 * 60))
 
     # Es werden keine Werte aus der Datenbank gelesen, sondern zufällig generiert
@@ -114,7 +121,12 @@ def api_get_chart_data():
                     )
                 )
             
-            maxValue = minMaxTemp(round(minValue + random.uniform(1.0, 5.0), 2))
+            maxValue = minMaxTemp(
+                round(
+                    minValue + random.uniform(1.0, 5.0), 
+                    2
+                )
+            )
 
             simValues.insert(0, { 'timestamp': timestamp, 'minValue': minValue, 'maxValue': maxValue })
         return jsonify(simValues)
