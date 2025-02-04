@@ -80,9 +80,9 @@ def api_insert_temp():
 @cross_origin(supports_credentials=True)
 def api_get_chart_data():
     days = request.args.get('days', default=1, type=int)
-    currentTimestamp = int(time.time())
-    currentDate = datetime.fromtimestamp(currentTimestamp)
-    minTimestamp = int(datetime(currentDate.year, currentDate.month, currentDate.day, currentDate.hour).timestamp() - (days * 24 * 60 * 60))
+    currentDate = datetime.fromtimestamp(time.time())
+    currentTimestamp = int(datetime(currentDate.year, currentDate.month, currentDate.day, currentDate.hour).timestamp())
+    minTimestamp = int(currentTimestamp - (days * 24 * 60 * 60))
 
     # Es werden keine Werte aus der Datenbank gelesen, sondern zufällig generiert
     simulate = request.args.get("simulate", default=None, type=bool)
