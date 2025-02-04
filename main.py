@@ -9,6 +9,7 @@ app = Flask(__name__)
 CORS(app, support_credentials=True)
 
 database = "database.db"
+currentTemp = None # Init
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -29,15 +30,21 @@ def page_index():
 @app.route("/api/temp/get")
 @cross_origin(supports_credentials=True)
 def api_get_current_temp():
-    cursor = get_db().cursor()
-    currentTemp = cursor.execute("SELECT timestamp, value FROM temp ORDER BY timestamp DESC LIMIT 1").fetchone()
-    if currentTemp == None:
+    #cursor = get_db().cursor()
+    #currentTemp = cursor.execute("SELECT timestamp, value FROM temp ORDER BY timestamp DESC LIMIT 1").fetchone()
+    #if currentTemp == None:
+        #return jsonify({ 'status': False, 'error': 'Aktuell gibt es keine Werte in der Datenbank.' }), 400
+    #return jsonify({ 'timestamp': currentTemp[0], 'value': currentTemp[1] })
+
+    if currentTemp is None:
         return jsonify({ 'status': False, 'error': 'Aktuell gibt es keine Werte in der Datenbank.' }), 400
-    return jsonify({ 'timestamp': currentTemp[0], 'value': currentTemp[1] })
+
+    return jsonify(currentTemp)
 
 @app.route("/api/temp/insert", methods=['POST'])
 @cross_origin(supports_credentials=True)
 def api_insert_temp():
+    global currentTemp
     timestamp = int(time.time())
     temp = None
     try:
@@ -50,14 +57,21 @@ def api_insert_temp():
 
     db = get_db()
 
-    #lastTempTimestamp = db.cursor().execute("SELECT timestamp FROM temp ORDER BY timestamp DESC LIMIT 1").fetchone()
+    lastTemp = db.cursor().execute("SELECT id, timestamp, minValue, maxValue FROM temp ORDER BY timestamp DESC LIMIT 1").fetchone()
 
-    #if datetime.fromtimestamp(lastTempTimestamp[0]).hour != datetime.fromtimestamp(timestamp).hour:
-        #print("neue stunde")
-        #rows = db.cursor().execute(f"SELECT MIN(value), MAX(value) FROM temp WHERE timestamp >= { timestamp - (60 * 60) }").fetchall()
-        #db.cursor().execute("INSERT INTO charttemp (timestamp, valueMin, valueMax) VALUES (?, ?, ?)", (timestamp, rows[0], rows[1]))
+    # Für diese Stunde gab es noch keine Datensätze oder es gibt überhaupt noch keine Datensätze, also wird ein neuer erstellt.
+    if lastTemp is None or datetime.fromtimestamp(lastTemp[1]).strftime("%d.%m.%y %H") != datetime.fromtimestamp(timestamp).strftime("%d.%m.%y %H"):
+        newDate = datetime.fromtimestamp(timestamp)
+        newTimestamp = int(datetime(newDate.year, newDate.month, newDate.day, newDate.hour).timestamp())
+        db.cursor().execute("INSERT INTO temp (timestamp, minValue, maxValue) VALUES (?, ?, ?)", (newTimestamp, temp, temp))
+    elif min(lastTemp[2], temp) != temp or max(lastTemp[2], temp) != temp:
+        db.cursor().execute("UPDATE temp SET minValue = ?, maxValue = ? WHERE id = ?", (min(lastTemp[2], temp), max(lastTemp[3], temp), lastTemp[0]))
 
-    db.cursor().execute("INSERT INTO temp (timestamp, value) VALUES (?, ?)", (timestamp, temp))
+    # REM: WIRD NICHT MEHR BENÖTIGT, DA DER PI NICHT GENÜGEND LEISTUNG HAT!!!
+    #db.cursor().execute("INSERT INTO temp (timestamp, value) VALUES (?, ?)", (timestamp, temp))
+    # REM
+
+    currentTemp = { 'timestamp': timestamp, 'value': temp }
     db.commit()
 
     return jsonify({ 'result': temp })
@@ -91,7 +105,9 @@ def api_get_chart_data():
 
     db = get_db()
     db.row_factory = sqlite3.Row
-    rows = db.cursor().execute(f"SELECT timestamp, value FROM temp WHERE timestamp >= { minTimestamp }").fetchall()
+    #rows = db.cursor().execute(f"SELECT timestamp, value FROM temp WHERE timestamp >= { minTimestamp }").fetchall()
+
+    rows = db.cursor().execute(f"SELECT timestamp, minValue, maxValue FROM temp WHERE timestamp >= { minTimestamp }").fetchall()
 
     return jsonify([dict(ix) for ix in rows])
 
