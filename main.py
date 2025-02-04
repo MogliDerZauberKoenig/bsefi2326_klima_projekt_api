@@ -11,6 +11,14 @@ CORS(app, support_credentials=True)
 database = "database.db"
 currentTemp = None # Init
 
+def minMaxTemp(temp: float) -> float:
+    if temp > 30.0:
+        temp -= temp - 30.0
+    elif temp < 10.0:
+        temp += 10.0 - temp
+    
+    return temp
+
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
@@ -88,20 +96,27 @@ def api_get_chart_data():
     simulate = request.args.get("simulate", default=None, type=bool)
     if simulate == True:
         simValues = []
-        for i in range(days * 24 * 60 * 60):
-            timestamp = currentTimestamp - i
-            value = 0
+        for i in range(days * 24):
+            timestamp = currentTimestamp - (i * 60 * 60)
+            minValue = 0
+            maxValue = 0
 
             if i == 0:
-                value = round(random.uniform(15.0, 25.0), 2)
+                minValue = round(random.uniform(15.0, 30.0), 2)
             else:
-                value = round(random.uniform(simValues[i - 1]['value'] - 0.25, simValues[i - 1]['value'] + 0.25), 2)
-                if value > 25.0:
-                    value -= value - 25.0
-                elif value < 10.0:
-                    value += 10.0 - value
+                minValue = minMaxTemp(
+                    round(
+                        random.uniform(
+                            simValues[i - 1]['minValue'] - 5.0, 
+                            simValues[i - 1]['minValue'] + 5.0
+                        ), 
+                        2
+                    )
+                )
             
-            simValues.insert(0, { 'timestamp': timestamp, 'value': value })
+            maxValue = minMaxTemp(round(minValue + random.uniform(1.0, 5.0), 2))
+
+            simValues.insert(0, { 'timestamp': timestamp, 'minValue': minValue, 'maxValue': maxValue })
         return jsonify(simValues)
 
     db = get_db()
