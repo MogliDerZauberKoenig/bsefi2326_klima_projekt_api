@@ -12,12 +12,7 @@ amountOfValues = days * 24
 
 
 def minMaxTemp(temp: float) -> float:
-    if temp > 30.0:
-        temp -= temp - 30.0
-    elif temp < 10.0:
-        temp += 10.0 - temp
-    
-    return temp
+    return max(10.0, min(30.0, temp))
 
 
 currentDate = datetime.fromtimestamp(time.time())

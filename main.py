@@ -12,12 +12,7 @@ database = "database.db"
 currentTemp = None # Init
 
 def minMaxTemp(temp: float) -> float:
-    if temp > 30.0:
-        temp -= temp - 30.0
-    elif temp < 10.0:
-        temp += 10.0 - temp
-    
-    return temp
+    return max(10.0, min(30.0, temp))
 
 def get_db():
     db = getattr(g, '_database', None)
