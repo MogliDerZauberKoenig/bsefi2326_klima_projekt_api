@@ -30,11 +30,21 @@ for i in range(amountOfValues):
     timestamp = currentTimestamp - (i * 60 * 60)
     value = 0
 
-    minValue = round(random.uniform(oldValue - random.uniform(1.0, 5.0), oldValue + random.uniform(1.0, 5.0)), 2)
-    maxValue = round(minValue + random.uniform(1.0, 5.0), 2)
-
-    minValue = minMaxTemp(minValue)
-    maxValue = minMaxTemp(maxValue)
+    minValue = minMaxTemp(
+        round(
+            random.uniform(
+                oldValue - random.uniform(1.0, 5.0), 
+                oldValue + random.uniform(1.0, 5.0)
+            ), 
+            2
+        )
+    )
+    maxValue = minMaxTemp(
+        round(
+            minValue + random.uniform(1.0, 5.0), 
+            2
+        )
+    )
 
     cursor.execute("INSERT INTO temp (timestamp, minValue, maxValue) VALUES (?, ?, ?)", (timestamp, minValue, maxValue))
 
