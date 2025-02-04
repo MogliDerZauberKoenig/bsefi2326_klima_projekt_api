@@ -49,11 +49,7 @@ currentTemp = None  # Initialisierung der aktuellen Temperatur
 ### Temperaturbegrenzung
 ```python
 def minMaxTemp(temp: float) -> float:
-    if temp > 30.0:
-        temp -= temp - 30.0
-    elif temp < 10.0:
-        temp += 10.0 - temp
-    return temp
+    return max(10.0, min(30.0, temp))
 ```
 - Stellt sicher, dass die Temperatur innerhalb des Bereichs 10°C - 30°C bleibt.
 
@@ -260,12 +256,7 @@ amountOfValues = days * 24
 Die Funktion `minMaxTemp(temp: float) -> float` stellt sicher, dass die Temperatur innerhalb des Bereichs 10.0 bis 30.0 Grad Celsius bleibt:
 ```python
 def minMaxTemp(temp: float) -> float:
-    if temp > 30.0:
-        temp -= temp - 30.0
-    elif temp < 10.0:
-        temp += 10.0 - temp
-    
-    return temp
+    return max(10.0, min(30.0, temp))
 ```
 
 ### 4. Initialisierung des Zeitstempels
